@@ -1,0 +1,8 @@
+base
+randomForest
+rpart
+lattice
+ggplot2
+caret
+AppliedPredictiveModeling
+e1071

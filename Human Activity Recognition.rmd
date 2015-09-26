@@ -1,0 +1,108 @@
+---
+title: "Human Activity Recognition"
+author: "Yuhang Tian"
+date: "Saturday, September 26, 2015"
+output: html_document
+---
+
+## Introduction
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it.
+
+In this project, our goal is to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to build the predictor to identify the activities. 
+
+##Data
+
+The data we took is orginally from this website [here](http://groupware.les.inf.puc-rio.br/har) (the Weight Lifting Exercise Dataset).
+
+What we use is a repo of the dataset from cloudfront
+
+### Download Data
+
+```{r,eval=FALSE}
+download.file("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv","train.csv",mode = "wb")
+download.file("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv","test.csv",mode = "wb")
+```
+
+### Read data
+
+```{r,cache=TRUE}
+train<-read.csv(file = "train.csv")
+test<-read.csv("test.csv")
+```
+
+##Preprocessing
+
+
+### Analysing data
+
+First, let's look at the data we readed from the csv
+
+
+```{r}
+str(train)
+```
+
+The dataset contains 19622 observations of 160 variables, with in the the "classe"" is the one we want to predict on.
+
+### Convert to Numeric
+
+It seems many columns are containing NA Values and several numeric are read as factor. To preprocess the data, we will first convert all the variables except the "classe" to numeric
+
+```{r,warning=FALSE}
+for (i in 1:159 ) {
+     train[,i]<-(as.numeric(as.character(train[,i])))
+ }
+```
+
+
+### Remove NA
+Then we remove the columns with too many NA values which doesn't help the prediction.
+
+```{r}
+nb_na <- sapply(train, function(x) {sum(is.na(x))})
+table(nb_na)
+train<-train[,(nb_na<19216)]
+```
+
+Now we have a clean data set, we are going to seperate the dataset into training and testing dataset.with 60% in training and 40% in testing.
+
+
+```{r,message=FALSE, warning=FALSE}
+library(caret)
+library(e1071)
+inTrain <- createDataPartition(y = train$classe,p=0.6,list=FALSE)
+training <- train[inTrain, ]
+testing <- train[-inTrain, ]
+```
+
+## Build Predict models
+
+In this project, we are going to try two different predict models and take the more effective one, the two models we are going to try are Decission Tree model and Random Forest model
+
+### Classification Tree
+
+```{r,message=FALSE, warning=FALSE,cache=TRUE}
+library(rpart)
+set.seed(33533)
+Tree<-rpart(classe~., training, method="class")
+predTree <- predict(Tree, testing, type="class")
+confusionMatrix(predTree, testing$classe)
+```
+
+As indicated in the result,the accurary equals to 0.9999. The expected out of sample error is (1-0.9999).
+
+### Random Forest
+
+```{r,message=FALSE, warning=FALSE,cache=TRUE}
+library(randomForest)
+set.seed(33533)
+Forest<-randomForest(classe~., training)
+predForest <- predict(Forest, testing, type="class")
+confusionMatrix(predForest, testing$classe)
+```
+
+As indicated in the result,the accurary equals to 0.9999. The expected out of sample error is (1-0.9999).
+
+indicates that both method is giving a good prediction.
+

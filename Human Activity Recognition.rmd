@@ -63,6 +63,7 @@ Then we remove the columns with too many NA values which doesn't help the predic
 nb_na <- sapply(train, function(x) {sum(is.na(x))})
 table(nb_na)
 train<-train[,(nb_na<19216)]
+train<-train[,-c(1:4)]
 ```
 
 Now we have a clean data set, we are going to seperate the dataset into training and testing dataset.with 60% in training and 40% in testing.
@@ -90,7 +91,7 @@ predTree <- predict(Tree, testing, type="class")
 confusionMatrix(predTree, testing$classe)
 ```
 
-As indicated in the result,the accurary equals to 0.9999. The expected out of sample error is (1-0.9999).
+As indicated in the result,the accurary equals to 0.7413. The expected out of sample error is (1-0.7413).
 
 ### Random Forest
 
@@ -102,7 +103,7 @@ predForest <- predict(Forest, testing, type="class")
 confusionMatrix(predForest, testing$classe)
 ```
 
-As indicated in the result,the accurary equals to 0.9999. The expected out of sample error is (1-0.9999).
+As indicated in the result,the accurary equals to 0.9943. The expected out of sample error is (1-0.9943).
 
-indicates that both method is giving a good prediction.
+Indicates that random forest is providing a much better accuracy and should be used as model to predict activities.
 

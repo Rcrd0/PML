@@ -213,7 +213,8 @@ table(nb_na)</code></pre>
 ##    57    67     1     1     1     4     1     4     2     2     1     1 
 ## 19296 19299 19300 19301 19622 
 ##     2     1     4     2     9</code></pre>
-<pre class="r"><code>train&lt;-train[,(nb_na&lt;19216)]</code></pre>
+<pre class="r"><code>train&lt;-train[,(nb_na&lt;19216)]
+train&lt;-train[,-c(1:4)]</code></pre>
 <p>Now we have a clean data set, we are going to seperate the dataset into training and testing dataset.with 60% in training and 40% in testing.</p>
 <pre class="r"><code>library(caret)
 library(e1071)
@@ -263,7 +264,7 @@ confusionMatrix(predTree, testing$classe)</code></pre>
 ## Detection Rate         0.2843   0.1935   0.1744   0.1638   0.1838
 ## Detection Prevalence   0.2843   0.1936   0.1744   0.1638   0.1839
 ## Balanced Accuracy      0.9998   0.9999   1.0000   0.9996   0.9999</code></pre>
-<p>As indicated in the result,the accurary equals to 0.9999. The expected out of sample error is (1-0.9999).</p>
+<p>As indicated in the result,the accurary equals to 0.7413. The expected out of sample error is (1-0.7413).</p>
 </div>
 <div id="random-forest" class="section level3">
 <h3>Random Forest</h3>
@@ -303,8 +304,8 @@ confusionMatrix(predForest, testing$classe)</code></pre>
 ## Detection Rate         0.2845   0.1935   0.1744   0.1639   0.1838
 ## Detection Prevalence   0.2845   0.1935   0.1744   0.1639   0.1838
 ## Balanced Accuracy      1.0000   1.0000   1.0000   1.0000   1.0000</code></pre>
-<p>As indicated in the result,the accurary equals to 0.9999. The expected out of sample error is (1-0.9999).</p>
-<p>indicates that both method is giving a good prediction.</p>
+<p>As indicated in the result,the accurary equals to 0.9943. The expected out of sample error is (1-0.9943).</p>
+<p>Indicates that random forest is providing a much better accuracy and should be used as model to predict activities.</p>
 </div>
 </div>
 
